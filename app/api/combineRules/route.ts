@@ -15,7 +15,7 @@ export async function POST(req: Request) {
     const combinedAst = combineRules(rules.map((r) => JSON.stringify(r.ast)));
 
     const result = await db.collection("rules").insertOne({
-      name: "Combined Rule",
+      name: `Combined Rule ${Math.floor(Date.now() / 1000) % 60}`,
       ast: combinedAst,
     });
 

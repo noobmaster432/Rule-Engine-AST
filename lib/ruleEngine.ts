@@ -29,24 +29,33 @@ function parseTokens(tokens: string[]): Node {
 }
 
 export function combineRules(rules: string[]): Node {
-  const astRules = rules.map(createRule);
-  
-  // Flatten the structure to meet the expected AST representation in tests
+  const astRules = rules.map((r) => createRule(r));
+
+  if (astRules.length === 1) return astRules[0];
+
+  // Start combining the rules into a binary tree
   const combined: Node = {
-    type: 'operator',
-    value: 'AND',
+    type: "operator",
+    value: "AND",
     left: astRules[0],
     right: undefined,
   };
 
-  let current = combined;
+  let current = combined; // Pointer to the current node
 
+  // Iterate through the remaining rules
   for (let i = 1; i < astRules.length; i++) {
-    current.right = astRules[i]; // Directly assign the next rule to the right
-    current = current.right; // Move current pointer to the new right node
+    const newNode: Node = {
+      type: "operator",
+      value: "AND", // You can change this to 'OR' if needed
+      left: current, // Current combined node becomes the left child
+      right: astRules[i], // The next rule becomes the right child
+    };
+
+    current = newNode; // Move the pointer to the new node
   }
 
-  return combined;
+  return current; // Return the final combined AST
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
