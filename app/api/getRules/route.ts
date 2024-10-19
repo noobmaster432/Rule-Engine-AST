@@ -1,6 +1,6 @@
 import clientPromise from '@/lib/mongodb';
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
     const client = await clientPromise;
     const db = client.db('ruleEngine');

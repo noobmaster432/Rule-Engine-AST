@@ -1,5 +1,6 @@
 "use client"
 
+import { Rule } from '@/models/Rule';
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 
@@ -9,7 +10,7 @@ interface RuleEvaluatorProps {
 }
 
 export default function RuleEvaluator({ refreshTrigger, darkMode }: RuleEvaluatorProps) {
-  const [rules, setRules] = useState([]);
+  const [rules, setRules] = useState<Rule[]>([]);
   const [selectedRule, setSelectedRule] = useState('');
   const [userData, setUserData] = useState('');
   const [result, setResult] = useState(null);
@@ -82,14 +83,16 @@ export default function RuleEvaluator({ refreshTrigger, darkMode }: RuleEvaluato
         <select
           id="ruleSelect"
           className={`w-full px-3 py-2 border rounded-md ${
-            darkMode ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-300'
+            darkMode
+              ? "bg-gray-700 border-gray-600"
+              : "bg-gray-50 border-gray-300"
           } focus:outline-none focus:ring-2 focus:ring-blue-500`}
           value={selectedRule}
           onChange={(e) => setSelectedRule(e.target.value)}
         >
           <option value="">Select a rule</option>
-          {rules.map((rule) => (
-            <option key={rule._id} value={rule._id}>
+          {rules.map((rule, i) => (
+            <option key={i} value={rule._id?.toString()}>
               {rule.name}
             </option>
           ))}
@@ -102,7 +105,9 @@ export default function RuleEvaluator({ refreshTrigger, darkMode }: RuleEvaluato
         <textarea
           id="userData"
           className={`w-full px-3 py-2 border rounded-md ${
-            darkMode ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-300'
+            darkMode
+              ? "bg-gray-700 border-gray-600"
+              : "bg-gray-50 border-gray-300"
           } focus:outline-none focus:ring-2 focus:ring-blue-500`}
           rows={4}
           value={userData}
@@ -122,8 +127,12 @@ export default function RuleEvaluator({ refreshTrigger, darkMode }: RuleEvaluato
       {result !== null && (
         <div className="mt-6 p-4 rounded-md bg-opacity-20 backdrop-filter backdrop-blur-lg">
           <h3 className="text-lg font-bold mb-2">Result:</h3>
-          <p className={`text-2xl font-bold ${result ? 'text-green-500' : 'text-red-500'}`}>
-            {result ? 'User Eligible' : 'User Not Eligible'}
+          <p
+            className={`text-2xl font-bold ${
+              result ? "text-green-500" : "text-red-500"
+            }`}
+          >
+            {result ? "User Eligible" : "User Not Eligible"}
           </p>
         </div>
       )}

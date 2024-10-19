@@ -1,7 +1,9 @@
 "use client"
 
+import { Rule } from '@/models/Rule';
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
+import { ObjectId } from "mongodb";
 
 interface RuleCombinerProps {
   refreshTrigger: number;
@@ -9,8 +11,8 @@ interface RuleCombinerProps {
 }
 
 export default function RuleCombiner({ refreshTrigger, darkMode }: RuleCombinerProps) {
-  const [rules, setRules] = useState([]);
-  const [selectedRules, setSelectedRules] = useState([]);
+  const [rules, setRules] = useState<Rule[]>([]);
+  const [selectedRules, setSelectedRules] = useState<(undefined | string | ObjectId)[]>([]);
 
   const fetchRules = async () => {
     try {
@@ -67,18 +69,20 @@ export default function RuleCombiner({ refreshTrigger, darkMode }: RuleCombinerP
         <label className="block text-sm font-medium mb-2">Select Rules</label>
         <div className="space-y-2 max-h-60 overflow-y-auto">
           {rules.map((rule) => (
-            <div key={rule._id} className="flex items-center">
+            <div key={rule._id?.toString()} className="flex items-center">
               <input
                 type="checkbox"
                 id={`rule-${rule._id}`}
                 className="form-checkbox h-5 w-5 text-blue-500"
-                value={rule._id}
+                value={rule._id?.toString()}
                 checked={selectedRules.includes(rule._id)}
                 onChange={(e) => {
                   if (e.target.checked) {
                     setSelectedRules([...selectedRules, rule._id]);
                   } else {
-                    setSelectedRules(selectedRules.filter((id) => id !== rule._id));
+                    setSelectedRules(
+                      selectedRules.filter((id) => id !== rule._id)
+                    );
                   }
                 }}
               />
